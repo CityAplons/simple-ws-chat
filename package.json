@@ -1,0 +1,24 @@
+{
+  "name": "simple-ws-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CityAplons/simple-ws-chat.git"
+  },
+  "keywords": [
+    "chat",
+    "websocket",
+    "express-ws"
+  ],
+  "author": "Nikita Mikhailovskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CityAplons/simple-ws-chat/issues"
+  },
+  "homepage": "https://github.com/CityAplons/simple-ws-chat#readme"
+}
