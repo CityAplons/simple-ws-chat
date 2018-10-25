@@ -1,17 +1,30 @@
-const express             = require('express');
-const session             = require('express-session');
-const chalk               = require('chalk');
-const bodyParser          = require('body-parser');
-const app                 = express();
+"use strict";
 
-const port                = 8080;
+//ext libs
+const chalk = require('chalk');
 
+//express init
+const express = require('express');
+const session = require('express-session');
+const app = express();
+const ws = require('express-ws')(app);
+const http = require("http").Server(app);
+const port = 3000;
+
+//db init
+const db = require("./models/index");
+
+//routes
+const users = require('./routers/v1/user');
+const chats = require('./routers/v1/chat');
+app.use('/v1/', users);
+app.use('/v1/', chats);
+
+//Middleware
+const bodyParser = require('body-parser');
 app.disable('x-powered-by');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-//routes
-require('./app/routes')(app);
 
 //server init
 let server = app.listen(port, () => {
@@ -21,6 +34,7 @@ let server = app.listen(port, () => {
 //exit code
 process.on('SIGTERM', function () {
   server.close(() => {
+    sequelize.close();
     console.log(chalk.red('Server gracefully stopped!'));
   });
   setTimeout( function () {
