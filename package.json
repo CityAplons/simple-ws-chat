@@ -20,5 +20,14 @@
   "bugs": {
     "url": "https://github.com/CityAplons/simple-ws-chat/issues"
   },
-  "homepage": "https://github.com/CityAplons/simple-ws-chat#readme"
+  "homepage": "https://github.com/CityAplons/simple-ws-chat#readme",
+  "devDependencies": {
+    "chalk": "^2.4.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "express-ws": "^4.0.0",
+    "pg": "^7.8.0",
+    "sequelize": "^4.42.0"
+  }
 }

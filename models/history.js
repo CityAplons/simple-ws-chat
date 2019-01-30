@@ -17,22 +17,27 @@ module.exports = function(sequelize, DataTypes) {
     },
     message: {
       field: "message",
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(1500),
       allowNull: false,
       comment: "Message text"
     }
   },
   {
     timestamps: true,
+    createdAt: sequelize.DATE,
     underscored: true,
     freezeTableName:true,
     tableName:'history',
-    classMethods:{
-      associate:function(models){
-        History.belongsTo(models.Chats, { foreignKey:'chat_id', foreignKeyConstraint:true} );
-      }
-    }
   });
+
+  History.associate = function (models) {
+    models.History.belongsTo(models.Chats, {
+      onDelete: "CASCADE",
+      foreignKey:'chat_id',
+      targetKey: 'id',
+      foreignKeyConstraint:true
+    });
+  };
 
   return History;
 };

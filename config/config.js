@@ -1,24 +1,24 @@
-{
+module.exports = {
   "development": {
     "database": "chat",
     "username": "worker",
     "password": "1235",
-    "host": "127.0.0.1:5432",
+    "host": "127.0.0.1",
     "dialect": "postgres",
     "operatorsAliases": false
   },
   "test": {
     "database": "chat",
-    "username": "",
-    "password": "",
+    "username": "worker",
+    "password": "1235",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "database": "chat",
-    "username": "",
-    "password": "",
+    "username": "worker",
+    "password": "1235",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }
-}
+};

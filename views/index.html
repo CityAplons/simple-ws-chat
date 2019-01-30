@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <link href="/stylesheet.css" rel="stylesheet">
+    <title>Welcome to simple express-ws chat</title>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="img">
+        <img src="/background.jpg">
+      </div>
+      <div class="auth-container">
+        <div id="logged" style="display:none;">
+            <hr>
+            <input type="button" onclick="location.href='/chat';" value="Login" />
+            <br>
+            <input type="button" onclick="location.href='/logout';" value="Logout" />
+        </div>
+        <div class="box">
+          <h1>Simple WS chat</h1>
+          <div id="loginFormDiv">
+            <form method="post" id="loginForm" action="/login">
+              <label for="login">Username:&nbsp;</label>
+              <input type="text" id="login" name="username" required />
+              <br>
+              <label for="password">Password:</label>
+              <input type="password" id="password" name="password" required />
+              <hr>
+              <input type="submit" value="Login">
+            </form>
+          </div>
+          <div id="registerFormDiv" style="display:none;">
+            <form method="post" id="registerForm" action="/signup">
+              <label for="username">New username:&nbsp;</label>
+              <input type="text" id="username" name="username" required />
+              <br>
+              <label for="regPass">Your password:</label>
+              <input type="password" id="regPass" name="password" required />
+              <hr>
+              <input type="submit" value="Register">
+            </form>
+          </div>
+          <button type="button" id="goToReg">Register</button>
+          <footer><small>Created by Mikhailovskiy Nikita<br>nmihaylovskiy@gmail.com</small></footer>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    //Register btn listener
+    let regBtn = document.getElementById("goToReg");
+    regBtn.onclick = function() {
+      let register = document.getElementById("registerFormDiv").style.display;
+      if(register == "none"){
+        regBtn.textContent = "Back";
+        document.getElementById("registerFormDiv").style.display = "block";
+        document.getElementById("loginFormDiv").style.display = "none";
+      } else {
+        regBtn.textContent = "Register";
+        document.getElementById("registerFormDiv").style.display = "none";
+        document.getElementById("loginFormDiv").style.display = "block";
+      }
+    };
+
+    window.onload = function () {
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('POST','/checkUser');
+        xhr.setRequestHeader("Content-Type","application/json");
+        xhr.send();
+        xhr.onload = function () {
+          if(this.responseText != ""){
+            let div = document.getElementById("logged");
+            document.getElementsByClassName("box")[0].style.display = "none";
+            div.prepend("Welcome back, " + this.responseText);
+            div.style.display = "block";
+          } else {
+            document.getElementsByClassName("box")[0].style.display = "block";
+            document.getElementById("logged").style.display = "none";
+          }
+        };
+    }
+  </script>
+
+</html>
