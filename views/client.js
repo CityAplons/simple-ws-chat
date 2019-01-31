@@ -24,23 +24,70 @@
   }
 });*/
 
-window.onload = function () {
+$(document).ready(function () {
+  let userId = null;
 
-  //Get username
-  const userTag = document.getElementById("user");
-  fetchUser(userTag);
-  
-}
-
-function fetchUser ( selector ) {
-  let xhr = new XMLHttpRequest();
-
-  xhr.open('POST','/checkUser');
-  xhr.setRequestHeader("Content-Type","application/json");
-  xhr.send();
-  xhr.onload = function () {
-    if(this.responseText != ""){
-      selector.innerHTML = this.responseText;
+  let init = $.ajax({
+    url: '/checkUser',
+    type: 'POST',
+    success: function(result){
+      const data = JSON.parse(result);
+      $('#user').append(data.username);
+      userId = data.id;
     }
-  };
-}
+  });
+
+  init.done( function () {
+
+    let friendList = $.ajax({
+      url: `/v1/user/${userId}/friends`,
+      type: 'GET',
+      success: function(result){
+        const selector = $('#friends');
+        selector.empty();
+        if(result != ""){
+          const data = JSON.parse(result);
+          data.forEach(function(item, i, data) {
+            const template = `<span class="user-badge" user-id="${item.id}">${item.username}</span><br>`;
+            selector.append(template);
+          });
+        } else {
+          selector.append('<h2 style="color:grey;">Empty</h2>');
+        }
+      }
+    });
+
+    let sReq = $.ajax({
+      url: `/v1/user/${userId}/friendRequestSent`,
+      type: 'GET',
+      success: function(result){
+        const selector = $('#friends');
+        if(result != ""){
+          const data = result;
+          selector.append('<h5>Sent requests</h5><br>');
+          data.forEach(function(item, i, data) {
+            const template = `<span class="user-badge" user-id="${item.id}">${item.username}</span><br>`;
+            selector.append(template);
+          });
+        }
+      }
+    });
+
+    let rReq = $.ajax({
+      url: `/v1/user/${userId}/friendRequestReceived`,
+      type: 'GET',
+      success: function(result){
+        if(result != ""){
+          const data = result;
+          const selector = $('#friends');
+          selector.append('<h5>Received requests</h5><br>');
+          data.forEach(function(item, i, data) {
+            const template = `<span class="user-badge" user-id="${item.id}">${item.username}</span><br>`;
+            selector.append(template);
+          });
+        }
+      }
+    });
+  });
+
+});

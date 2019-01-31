@@ -8,10 +8,10 @@ router.param('id', function (req, res, next, id) {
     .then(user => {
       if (!user) res.sendStatus(404);
       else {
-        //if(req.session.user && req.cookies.SSID && req.session.user.username == user.username){
+        if(req.session.user && req.cookies.SSID && req.session.user.username == user.username){
           req.user = user;
           next();
-        //} else res.sendStatus(404);
+        } else res.sendStatus(404);
       }
     })
     .catch(next);
@@ -20,6 +20,13 @@ router.param('id', function (req, res, next, id) {
 router.get('/user/:id', function (req, res) {
   console.log("Get user by id");
   res.json({username:req.user.username});
+});
+
+router.get('/user/', function (req, res) {
+  db.User.findAll({
+    where: { username: req.query.user },
+    attributes: ['id', 'username']
+  }).then( result => res.status(200).send(result))
 });
 
 router.put('/user/:id/friendRequest', function(req, res, next) {

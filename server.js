@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 app.post("/checkUser", (req, res) => {
   res.set('Content-Type', 'text/html');
   if(req.session.user && req.cookies.SSID){
-    res.send(req.session.user.username);
+    res.json({username: req.session.user.username, id: req.session.user.id });
   } else {
     res.send(null);
   }

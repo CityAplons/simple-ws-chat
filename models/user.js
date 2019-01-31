@@ -12,11 +12,17 @@ let User = sequelize.define('User', {
     username: {
         type: DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          is: /[^A-Za-z0-9]+/g,
+        }
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          is: /[^A-Za-z0-9!?#$%@^&*_+-`~]+/g,
+        }
     }
 });
 
