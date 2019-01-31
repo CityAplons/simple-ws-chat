@@ -1,37 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ChatRoom</title>
-    <style>
-      body{
-        margin:0 auto;
-      }
-
-      .window{
-        width:100%;
-        min-height: 500px;
-      }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WS Chat</title>
+    <link href="/stylesheet.css" rel="stylesheet">
   </head>
   <body>
-    <h1>express-ws simple chat with postgres db</h1>'
-
-    <div>
-
+    <div class="nav">
+      <h3 style="float:left;" id="user"></h3>
+      <nav class="navbar" style="float:right;">
+        <input type="button" onclick="location.href='/logout';" value="Logout" />
+      </nav>
     </div>
-
-    <div class="window">
-      <div class="messages">
-        <!--<div><span class="sender"></span>:</div>
-        <div style="width:70%"><p class="text"></p></div>-->
+    <div class="container">
+      <div class="side">
+        <div class="chatList">
+          <h4>Chats</h4>
+          <div id="chats">
+            <input type="button" class="btn-group" id="createChat" value="Create chat" /><br>
+            <input type="button" class="btn-group" id="joinChat" value="Join chat" />
+            <!-- Scripted -->
+          </div>
+        </div>
+        <div class="friendList">
+          <h4>Friends</h4>
+          <div id="friends">
+            <input type="button" class="btn-group" id="findFriend" value="Add a friend" />
+            <!-- Scripted -->
+          </div>
+        </div>
+      </div>
+      <div class="history">
+        <div class="historyContainer">
+          <div id="chatWindow"><!-- Scripted --></div>
+        </div>
+        <form class="messageForm" action="/chat" method="post">
+          <input type="textarea" class="message" autofocus>
+          <input type="submit" class="submit" value="Send">
+        </form>
       </div>
     </div>
 
-    <form class="form">
-      <input type="textarea" style="width:69%;float:left;" class="input" autofocus>
-      <input class="submit" style="width:30%;float:right;padding:0" type="submit">
-    </form>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="client.js"></script>
   </body>
 </html>

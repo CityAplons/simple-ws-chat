@@ -34,6 +34,7 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 sequelize.sync()
+//sequelize.sync({force:true})
     .then(() => console.log(chalk.yellow('Database was initializated successfully...')))
     .catch(error => console.log(chalk.red('This error occured while db init:', error)));
 

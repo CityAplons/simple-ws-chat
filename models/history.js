@@ -9,12 +9,6 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true,
       comment: "Primary and auto incremented key of the table"
     },
-    username: {
-      field: "user",
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      comment: "Sender"
-    },
     message: {
       field: "message",
       type: DataTypes.STRING(1500),
@@ -34,6 +28,11 @@ module.exports = function(sequelize, DataTypes) {
     models.History.belongsTo(models.Chats, {
       onDelete: "CASCADE",
       foreignKey:'chat_id',
+      targetKey: 'id',
+      foreignKeyConstraint:true
+    });
+    models.History.belongsTo(models.User, {
+      foreignKey:'user_id',
       targetKey: 'id',
       foreignKeyConstraint:true
     });

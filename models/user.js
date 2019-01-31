@@ -20,6 +20,16 @@ let User = sequelize.define('User', {
     }
 });
 
+User.associate = function (models) {
+  models.User.hasMany(models.History, {
+    foreignKey: 'user_id',
+    sourceKey: 'id'
+  });
+  models.User.belongsToMany(models.User, { as: 'Friends', through: 'friends' });
+  models.User.belongsToMany(models.User, { as: 'Requestees', through: 'friendRequests', foreignKey: 'requesterId', onDelete: 'CASCADE'});
+  models.User.belongsToMany(models.User, { as: 'Requesters', through: 'friendRequests', foreignKey: 'requesteeId', onDelete: 'CASCADE'});
+};
+
 User.prototype.validPassword = function (password) {
   if(password == this.password) return true;
   else return false;

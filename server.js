@@ -38,7 +38,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 600000
+        expires: ( 1000*3600*24*7 )
     }
 }));
 
@@ -134,6 +134,9 @@ app.get('/logout', (req, res) => {
         res.redirect('/login');
     }
 });
+
+const user = require('./v1/user');
+app.use('/v1/', user);
 
 //websocket init
 app.ws('/chat', function(ws, req, next) {
