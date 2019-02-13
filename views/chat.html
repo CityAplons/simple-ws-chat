@@ -17,9 +17,14 @@
       <div class="side">
         <div class="chatList">
           <h4>Chats</h4>
+          <div id="createChatDiv" style="display:none;">
+            <form id="createChatForm" method="post">
+              <input type="text" name="chatName" autofocus>
+              <input type="submit" class="btn-group" value="Create">
+            </form>
+          </div>
+          <input type="button" class="btn-group" id="createChat" value="Create chat" /><br>
           <div id="chats">
-            <input type="button" class="btn-group" id="createChat" value="Create chat" /><br>
-            <input type="button" class="btn-group" id="joinChat" value="Join chat" />
             <!-- Scripted -->
           </div>
         </div>
@@ -39,16 +44,37 @@
       </div>
       <div class="history disabled">
         <div class="historyContainer">
+          <nav id="chatSettings">
+            <h4 class="chat_name" style="float:left;"></h4>
+            <div class="chat_settings">
+              <button type="button" class="cntrl add_usr">+👤 Add user</button>
+              <button type="button" class="cntrl rename_chat">✎ Rename</button>
+              <button type="button" class="cntrl leave_chat">➡ Leave chat</button>
+              <button type="button" class="cntrl delete_chat">✘ Delete chat</button>
+            </div>
+          </nav>
+          <div class="modal" id="renameChat">
+            <form id="renameChatForm">
+              <input type="text" name="chatName" autofocus>
+              <input type="submit" class="btn-group" value="Rename">
+            </form>
+          </div>
+          <div class="modal" id="addUserChat">
+            <div id="friendResultChat">
+              <!-- Scripted -->
+            </div>
+          </div>
           <div id="chatWindow"><!-- Scripted --></div>
         </div>
-        <form class="messageForm" action="/chat" method="post">
-          <input type="textarea" class="message" autofocus>
+        <form class="messageForm">
+          <input type="textarea" class="message" name="message" autofocus>
           <input type="submit" class="submit" value="Send">
         </form>
       </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="client.js"></script>
   </body>
 </html>

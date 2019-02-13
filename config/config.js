@@ -5,7 +5,8 @@ module.exports = {
     "password": "1235",
     "host": "127.0.0.1",
     "dialect": "postgres",
-    "operatorsAliases": false
+    "operatorsAliases": false//,
+    //"logging": false
   },
   "test": {
     "database": "chat",
@@ -19,6 +20,7 @@ module.exports = {
     "username": "worker",
     "password": "1235",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   }
 };

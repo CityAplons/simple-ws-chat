@@ -17,7 +17,6 @@ router.param('id', function (req, res, next, id) {
 });
 
 router.get('/user/:id', function (req, res) {
-  console.log("Get user by id");
   res.json({username:req.user.username});
 });
 
@@ -30,7 +29,6 @@ router.get('/user/', function (req, res) {
 
 router.put('/user/:id/friendRequest', function(req, res, next) {
   if (req.body.requesteeId != req.user.id) {
-    console.log('Send friend request');
     req.user.addRequestees(req.body.requesteeId)
       .then(result => res.status(201).send(result))
       .catch(next);
@@ -51,7 +49,6 @@ router.put('/user/:id/cancelFriendRequest', function(req, res, next) {
 
 router.put('/user/:id/acceptFriendRequest', function(req, res, next) {
   if (req.body.requesterId != req.user.id) {
-    console.log(`${req.user.username} accepted new friend`);
     req.user.addFriends(req.body.requesterId)
       .then(result => res.status(201).send(result))
       .then(db.User.findByPk(req.body.requesterId).then( user => {
@@ -78,7 +75,6 @@ router.get('/user/:id/friends', function(req, res, next) {
 
 router.put('/user/:id/unfriend', function(req, res, next) {
   if (req.body.friendId != "") {
-    console.log(`${req.user.username} deleted a friend`);
     req.user.removeFriends(req.body.friendId)
     .then(db.User.findByPk(req.body.friendId).then( user => {
       user.removeFriends(req.user.id);

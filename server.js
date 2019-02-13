@@ -135,41 +135,47 @@ app.get('/logout', (req, res) => {
     }
 });
 
-const user = require('./v1/user');
-app.use('/v1/', user);
+//WebSocket id
+app.param('socket_id', function (req, res, next, id) {
+  db.Chats.findByPk(id)
+    .then(chat => {
+      if (!chat) res.sendStatus(404);
+      else {
+        if(req.session.user && req.cookies.SSID){
+          req.chat = chat;
+          next();
+        } else res.sendStatus(404);
+      }
+    })
+    .catch(next);
+});
 
-//websocket init
-app.ws('/chat', function(ws, req, next) {
+let wss = ws.getWss();
 
-  ws.on('connection', function() {
-    //ws.send(`Hello ${user}`);
-    console.log('!Client coonected');
-  });
+//webSocket
+app.ws('/echo/:socket_id', function(ws, req) {
 
-  ws.on('disconnect', function() {
-    //ws.send(`Hello ${user}`);
-    console.log('!Client discoonected');
-  });
-
-
-  ws.on('message', function(msg) {
-    ws.send(msg);
-    console.log('Received -', msg);
-    /*db.History.sync({force: true}).then(() => {
-      // Table created
-      return db.History.create({
-        username: req.body.username,
-        message: msg,
-        chat_id: 1
-      });
-    });*/
+  ws.on('message', message => {
+    //ws.send(message);
+    wss.clients.forEach(function each(client) {
+      client.send(message);
+      console.log(client)
     });
 
+  });
 
 });
 
+//User router
+const user = require('./v1/user');
+app.use('/v1/', user);
+
+//Chat router
+const chat = require('./v1/chat');
+app.use('/v1/', chat);
+
 //server init
-let server = app.listen(app.get('port'), () => {
+app.listen(app.get('port'), () => {
   console.log(chalk.yellow(`Server alive on port: ${app.get('port')}\nServer PID: ${process.pid}\nUse "kill [pid]" to terminate server!`));
 });
 

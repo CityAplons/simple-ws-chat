@@ -131,6 +131,7 @@ div.container {
 div.side {
   flex-grow: 1;
   height: 95vh;
+  max-width: 300px;
   background-color: hsl(0, 0%, 97%);
   box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.38);
   z-index: 5;
@@ -161,13 +162,16 @@ input.message {
 input.submit {
   width: 19%;
   height: 80%;
+  background-color: hsl(0, 0%, 95%);
+  border: none;
+  border-radius: 8px;
 }
 
 input.submit:hover {background-color: hsl(0, 0%, 91%);}
 
 #chatWindow {
   width: 100%;
-  height: 100%;
+  height: 84vh;
   overflow-y: scroll;
 }
 
@@ -184,6 +188,14 @@ input.submit:hover {background-color: hsl(0, 0%, 91%);}
   min-height: 100px;
   width: 100%;
   padding: 10px;
+}
+
+#createChatDiv,#createChatForm {
+  width:100%;
+}
+
+#createChatForm input{
+  width: 100%;
 }
 
 .btn-group  {
@@ -206,7 +218,7 @@ h5.titles {
   text-decoration: underline;
 }
 
-div.user-badge {
+div.user-badge, div.chat-badge {
   width: 100%;
   height: 23px;
   margin: 5px;
@@ -214,7 +226,26 @@ div.user-badge {
   -webkit-box-shadow: 0px 0px 25px -5px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 0px 25px -5px rgba(0,0,0,0.75);
   box-shadow: 0px 0px 25px -5px rgba(0,0,0,0.75);
-  padding-left: 10px;
+  padding-left:10px;
+}
+
+.chat_name, div.user-badge p, div.chat-badge p {
+  padding: 4px 0 0 0;
+}
+
+div.user-badge:hover, div.chat-badge:hover {
+  cursor: pointer;
+  -webkit-box-shadow: 0px 0px 25px -5px rgba(26, 83, 255,0.75);
+  -moz-box-shadow: 0px 0px 25px -5px rgba(26, 83, 255,0.75);
+  box-shadow: 0px 0px 25px -5px rgba(26, 83, 255,0.75);
+}
+
+div.user-badge:active, div.chat-badge:active {
+  cursor: pointer;
+  background-color: hsl(0, 0%, 92%);
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 
 .cntrl {
@@ -237,8 +268,76 @@ div.chatList, div.friendList{
   color: red;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.modal {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  display: none;
+  max-height: 500px;
+  padding: 3rem;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 25px -5px rgba(26, 83, 255,0.75);
+  -moz-box-shadow: 0px 0px 25px -5px rgba(26, 83, 255,0.75);
+  box-shadow: 0px 0px 25px -5px rgba(26, 83, 255,0.75);
+  z-index: 101;
+}
+
+.messageDiv {
+  width:60%;
+  padding: 20px;
+  margin: 15px;
+  background-color: white;
+  border-radius: 30px 30px 30px 0px;
+  -moz-border-radius: 30px 30px 30px 0px;
+  -webkit-border-radius: 30px 30px 30px 0px;
+  border: 0px solid #000000;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+
+.messageDiv p {
+  margin: 8px 0 8px 0;
+}
+
+span.user{
+  position: relative;
+  float: left;
+  color: grey;
+  bottom: 5px;
+  left: -8px;
+}
+
+span.time {
+  position: relative;
+  float: right;
+  color: grey;
+  bottom: 5px;
+}
+
+#renameChatForm input {
+  width: 100%;
+  margin-top: 15px;
+}
+
 @media screen and (max-width: 885px) {
   div.container {
     flex-direction: column;
+  }
+  div.side{
+    max-width: none;
+  }
+  .messageDiv {
+    width: 90%;
   }
 }
