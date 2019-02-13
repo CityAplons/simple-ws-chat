@@ -75,9 +75,10 @@
         xhr.send();
         xhr.onload = function () {
           if(this.responseText != ""){
+            let user = JSON.parse(this.responseText)["username"];
             let div = document.getElementById("logged");
             document.getElementsByClassName("box")[0].style.display = "none";
-            div.prepend("Welcome back, " + this.responseText);
+            div.prepend("Welcome back, " + user);
             div.style.display = "block";
           } else {
             document.getElementsByClassName("box")[0].style.display = "block";

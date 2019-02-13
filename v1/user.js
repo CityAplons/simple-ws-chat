@@ -3,7 +3,6 @@ let router = express.Router();
 const db = require("../models");
 
 router.param('id', function (req, res, next, id) {
-  console.log('Set router.param for :userId');
   db.User.findByPk(id)
     .then(user => {
       if (!user) res.sendStatus(404);
@@ -44,8 +43,8 @@ router.put('/user/:id/cancelFriendRequest', function(req, res, next) {
   db.friendRequests.destroy(
     {where:
       {
-        "requesteeId": req.body.requesteeId,
-        "requesterId": req.user.id
+        "requesteeId": req.user.id,
+        "requesterId": req.body.requesterId
       }
     }).then(result => res.sendStatus(200))
 });

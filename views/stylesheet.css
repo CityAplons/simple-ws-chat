@@ -175,7 +175,18 @@ input.submit:hover {background-color: hsl(0, 0%, 91%);}
   padding: 10px 0 10px 0;
 }
 
-#chats input, #friends input{
+#chats h5, #friends h5 {
+  margin: 10px;
+}
+
+#friendResult {
+  margin: 5px 0 5px 0;
+  min-height: 100px;
+  width: 100%;
+  padding: 10px;
+}
+
+.btn-group  {
   width: 100%;
   height: 25px;
   background-color: hsl(0, 0%, 95%);
@@ -185,13 +196,45 @@ input.submit:hover {background-color: hsl(0, 0%, 91%);}
   border-radius: 8px;
 }
 
-#chats input:hover, #friends input:hover{
+.btn-group:hover  {
   background-color: hsl(0, 0%, 91%);
+}
+
+h5.titles {
+  text-align: center;
+  color:#666666;
+  text-decoration: underline;
+}
+
+div.user-badge {
+  width: 100%;
+  height: 23px;
+  margin: 5px;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 25px -5px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 25px -5px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 25px -5px rgba(0,0,0,0.75);
+  padding-left: 10px;
+}
+
+.cntrl {
+    width: auto;
+    height: 23px;
+    float: right;
+}
+
+.disabled{
+    pointer-events: none;
+    opacity: 0.4;
 }
 
 div.chatList, div.friendList{
   height: 50%;
   padding: 1rem;
+}
+
+.status {
+  color: red;
 }
 
 @media screen and (max-width: 885px) {

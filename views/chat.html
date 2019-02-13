@@ -26,8 +26,10 @@
         <div class="friendList">
           <h4>Friends</h4>
           <div id="addFriend" style="display:none;">
-            <input type="text" id="findUser" value="Search">
-            <!-- Scripted -->
+            <input type="text" id="findUser" placeholder="Search" style="width:100%; margin: 5px 0 5px 0;">
+            <div id="friendResult">
+              <!-- Scripted -->
+            </div>
           </div>
           <input type="button" class="btn-group" id="findFriend" value="Add a friend" />
           <div id="friends">
@@ -35,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="history">
+      <div class="history disabled">
         <div class="historyContainer">
           <div id="chatWindow"><!-- Scripted --></div>
         </div>

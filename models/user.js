@@ -14,14 +14,24 @@ let User = sequelize.define('User', {
         unique: true,
         allowNull: false,
         validate: {
-          is: /[^A-Za-z0-9]+/g,
+          isUser: function ( value ) {
+            if ( !/[A-Za-z0-9]+/g.test(value) ) {
+              throw new Error('Username validation error!')
+            }
+          },
+          notEmpty: true
         }
     },
     password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          is: /[^A-Za-z0-9!?#$%@^&*_+-`~]+/g,
+          isPassword: function ( value ) {
+            if ( !/[A-Za-z0-9!?#$%@^&*_+-`~]+/g.test(value) ) {
+              throw new Error('Password validation error!')
+            }
+          },
+          notEmpty: true
         }
     }
 });
