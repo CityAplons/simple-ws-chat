@@ -1,5 +1,4 @@
 let express = require('express');
-let ws = require('express-ws');
 let router = express.Router();
 let db = require("../models");
 
@@ -13,9 +12,6 @@ let db = require("../models");
   _getUsers
   _loadMessages
 
-  WS:
-  +sendMessage
-  +recieveMessage
 */
 
 router.param('id', function (req, res, next, id) {

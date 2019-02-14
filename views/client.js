@@ -33,6 +33,24 @@ $(document).ready(function () {
 
     });
 
+    const switchSide = function () {
+      const selector = $(".history");
+      const side = $(".side");
+
+      if(selector.css("display") == "none"){
+        selector.show();
+        side.hide();
+      }
+      else {
+        selector.hide();
+        side.show();
+      }
+    }
+
+    $("#switchSide").on("click", function (){
+      switchSide();
+    })
+
     //Check user for requests and friend other user
     const checkUserReq = s_id => {
       return new Promise(function(resolve, reject) {
@@ -438,7 +456,10 @@ $(document).ready(function () {
 
       chatList.done( function () {
         //Chat click function
+        let ws;
+
         $(".chat-badge").on("click", function () {
+
           const button = $(this);
           const nav = $("#chatSettings");
           const title = $(".chat_name");
@@ -446,42 +467,59 @@ $(document).ready(function () {
 
           $(".chat_settings").attr("chat_id", id);
           $(".history").removeClass("disabled");
+          if( $('.history').css('display') == 'none' ) switchSide();
           title.text(button.text());
           chatId = id;
 
           const selector = $("#chatWindow");
           selector.empty();
-          selector.scrollTop(selector[0].scrollHeight);
           const fetchHistory = $.ajax({
             url: `/v1/${userId}/chat/${chatId}/loadMessages`,
             type: 'POST',
             success: function(result){
               result.forEach( function(item) {
-                let template = `<div class="messageDiv" message-id="${item.id}"><p>${item.message}</p><span class="user">${item.User.username}</span><span class="time">${moment(item.created_at).format('MMMM Do YYYY, h:mm:ss a')}</span></div>`;
+                let classDiv = "messageDiv"
+                if ( item.User.id === userId) classDiv = "messageDivSelf";
+                let template = `<div class="msgContainer"><div class="${classDiv}" message-id="${item.id}"><p>${item.message}</p><span class="user">${item.User.username}</span><span class="time">${moment(item.created_at).format('MMMM Do YYYY, h:mm:ss a')}</span></div></div>`;
                 selector.append(template);
               });
+              selector.scrollTop(selector[0].scrollHeight);
             }
           });
 
+          //check for opened sockets
+          if(ws) ws.close();
+
           //WebSocket init
           const webSocketAddr = window.location.origin.replace(/^http/, 'ws');;
-          const ws = new WebSocket(`${webSocketAddr}/echo/${chatId}`);
+          ws = new WebSocket(`${webSocketAddr}/v1/echo/${chatId}`);
 
           let printMessage = function ( text ) {
-            let template = `<div class="messageDiv" message-id=""><p>${text}</p><span class="user"></span><span class="time"></span></div>`;
+            let data = JSON.parse(text);
+            let classDiv = "messageDiv"
+            if ( data.user_id === userId) classDiv = "messageDivSelf";
+            let template = `<div class="msgContainer"><div class="${classDiv}" message-id="${data.id}"><p>${data.message}</p><span class="user">${data.username}</span><span class="time">${moment(data.created_at).format('MMMM Do YYYY, h:mm:ss a')}</span></div></div>`
             $("#chatWindow").append(template);
           }
 
-          ws.onmessage = response => printMessage( response.data );
-
-          $(".messageForm").on("submit", function () {
-            event.preventDefault();
-            const text = $(this).find( "input[name='message']" ).val();
-            ws.send(text);
-            $(this).find( "input[name='message']" ).val("");
-          });
+          ws.onmessage = response => {
+            printMessage( response.data );
+            selector.scrollTop(selector[0].scrollHeight);
+          }
 
         });
+
+        $(".messageForm").on("submit", function () {
+          event.preventDefault();
+          const text = $(this).find( "input[name='message']" ).val();
+          if(ws != undefined && text != ""){
+            ws.send(text);
+          }
+          $(this).find( "input[name='message']" ).val("");
+        });
+
+
+
       });
 
     };

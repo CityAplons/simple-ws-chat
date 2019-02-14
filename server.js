@@ -42,8 +42,8 @@ app.use(session({
     }
 }));
 
-// This middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
-// This usually happens when you stop your express server after login, your cookie still remains saved in the browser.
+// this middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
+// this usually happens when you stop your express server after login, your cookie still remains saved in the browser.
 app.use((req, res, next) => {
     if (req.cookies.SSID && !req.session.user) {
         res.clearCookie('SSID');
@@ -85,8 +85,7 @@ app.route('/signup')
             res.redirect('/chat');
         })
         .catch(error => {
-            console.log(error);
-            res.redirect('/signup');
+            res.redirect(`/signup#${error.message}`);
         });
     });
 
@@ -103,9 +102,9 @@ app.route('/login')
         db.User.findOne({ where: { username: username } })
         .then(function (user) {
             if (!user) {
-                res.redirect('/login');
+                res.redirect('/login#Wrong username or password');
             } else if (!user.validPassword(password)) {
-                res.redirect('/login');
+                res.redirect('/login#Wrong username or password');
             } else {
                 console.log(chalk.green(`User ${username} logged in!`));
                 req.session.user = user.dataValues;
@@ -135,37 +134,6 @@ app.get('/logout', (req, res) => {
     }
 });
 
-//WebSocket id
-app.param('socket_id', function (req, res, next, id) {
-  db.Chats.findByPk(id)
-    .then(chat => {
-      if (!chat) res.sendStatus(404);
-      else {
-        if(req.session.user && req.cookies.SSID){
-          req.chat = chat;
-          next();
-        } else res.sendStatus(404);
-      }
-    })
-    .catch(next);
-});
-
-let wss = ws.getWss();
-
-//webSocket
-app.ws('/echo/:socket_id', function(ws, req) {
-
-  ws.on('message', message => {
-    //ws.send(message);
-    wss.clients.forEach(function each(client) {
-      client.send(message);
-      console.log(client)
-    });
-
-  });
-
-});
-
 //User router
 const user = require('./v1/user');
 app.use('/v1/', user);
@@ -173,6 +141,10 @@ app.use('/v1/', user);
 //Chat router
 const chat = require('./v1/chat');
 app.use('/v1/', chat);
+
+//WS router
+const webSocket = require('./v1/websocket');
+app.use('/v1/', webSocket);
 
 //server init
 app.listen(app.get('port'), () => {

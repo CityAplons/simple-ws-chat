@@ -14,6 +14,9 @@
       </nav>
     </div>
     <div class="container">
+      <div class="mobileNav">
+        <input type="button" class="btn-group" id="switchSide" value="☰ Menu" />
+      </div>
       <div class="side">
         <div class="chatList">
           <h4>Chats</h4>
@@ -67,7 +70,7 @@
           <div id="chatWindow"><!-- Scripted --></div>
         </div>
         <form class="messageForm">
-          <input type="textarea" class="message" name="message" autofocus>
+          <input type="textarea" class="message" name="message" autocomplete="off" autofocus>
           <input type="submit" class="submit" value="Send">
         </form>
       </div>
