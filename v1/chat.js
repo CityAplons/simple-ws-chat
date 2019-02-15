@@ -139,6 +139,9 @@ router.put('/:user_id/chat/:id/leaveChat', function(req, res, next) {
 
 router.post('/:user_id/chat/:id/loadMessages', function(req, res, next) {
   req.chat.getHistories({
+    order: [
+            ['created_at', 'ASC'],
+        ],
     include: [{
       model: db.User,
       attributes: ['id', 'username']

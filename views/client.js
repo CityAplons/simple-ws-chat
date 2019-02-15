@@ -1,6 +1,16 @@
 $(document).ready(function () {
   let userId = null;
   let chatId = null;
+  let ws;
+  const webSocketAddr = window.location.origin.replace(/^http/, 'ws');
+
+  //WS close func
+  let closeWS = function ( ws ) {
+    //check for opened sockets
+    if(ws){
+      ws.close();
+    }
+  }
 
   let init = $.ajax({
     url: '/checkUser',
@@ -93,6 +103,41 @@ $(document).ready(function () {
       });
     };
 
+    //Create chat button listener
+    $("#createChat").on("click", function () {
+      const selector = $("#createChatDiv");
+      const chatsDiv = $("#chats");
+      const button = $(this);
+
+      if(selector.css("display") == "none"){
+        selector.show();
+        chatsDiv.hide();
+        button.val("Cancel");
+      }
+      else {
+        selector.hide();
+        chatsDiv.show();
+        button.val("Create chat");
+      }
+    });
+
+    //Create chat form listener
+    $("#createChatForm").on("submit", function () {
+      event.preventDefault();
+
+      const name = $(this).find( "input[name='chatName']" ).val();
+      $.ajax({
+        type: "POST",
+        url: `/v1/${userId}/chat/createChat`,
+        data: { chatName: name },
+        success: function(data){
+          updateChatList();
+          $("#createChat").trigger("click");
+          closeWS(ws);
+        }
+      });
+    });
+
     //Search friend function
     let searchFriend = function () {
       let username = $("#findUser").val();
@@ -142,39 +187,6 @@ $(document).ready(function () {
         success: function(){
           updateFriendsList();
           $("#findFriend").trigger("click");
-        }
-      });
-    });
-
-    //Create chat button listener
-    $("#createChat").on("click", function () {
-      const selector = $("#createChatDiv");
-      const chatsDiv = $("#chats");
-      const button = $(this);
-
-      if(selector.css("display") == "none"){
-        selector.show();
-        chatsDiv.hide();
-        button.val("Cancel");
-      }
-      else {
-        selector.hide();
-        chatsDiv.show();
-        button.val("Create chat");
-      }
-    });
-
-    //Create chat form listener
-    $("#createChatForm").on("submit", function () {
-      event.preventDefault();
-      const name = $(this).find( "input[name='chatName']" ).val();
-      $.ajax({
-        type: "POST",
-        url: `/v1/${userId}/chat/createChat`,
-        data: { chatName: name },
-        success: function(){
-          updateChatList();
-          $("#createChat").trigger("click");
         }
       });
     });
@@ -271,7 +283,7 @@ $(document).ready(function () {
           url: `/v1/user/${userId}/friends`,
           type: 'GET',
           success: function(result){
-            result.forEach(function(item, i, data) {
+            result.forEach(function(item) {
               if( !inChat.includes(item.id) ){
                 const template = `<div class="chat-badge noselect" user-id="${item.id}">${item.username}<button type="button" class="cntrl addFriendChat">+</button></div>`;
                 selector.append(template);
@@ -280,21 +292,22 @@ $(document).ready(function () {
                 selector.append(template);
               }
             });
-          }
-        }).done( function () {
-          $(".addFriendChat").on("click", function () {
-            const button = $(this);
-            const id = button.parent().attr("user-id");
+          },
+          complete: function () {
+            $(".addFriendChat").on("click", function () {
+              const button = $(this);
+              const id = button.parent().attr("user-id");
 
-            $.ajax({
-              url: `/v1/${userId}/chat/${chatId}/inviteChat`,
-              type: 'PUT',
-              data: { user_id: id },
-              success: function(){
-                $("#addUserChat").hide();
-              }
+              $.ajax({
+                url: `/v1/${userId}/chat/${chatId}/inviteChat`,
+                type: 'PUT',
+                data: { user_id: id },
+                success: function(){
+                  $("#addUserChat").hide();
+                }
+              });
             });
-          });
+          }
         });
       });
     };
@@ -455,9 +468,8 @@ $(document).ready(function () {
       });
 
       chatList.done( function () {
-        //Chat click function
-        let ws;
 
+        //Chat click function
         $(".chat-badge").on("click", function () {
 
           const button = $(this);
@@ -467,10 +479,10 @@ $(document).ready(function () {
 
           $(".chat_settings").attr("chat_id", id);
           $(".history").removeClass("disabled");
-          if( $('.history').css('display') == 'none' ) switchSide();
           title.text(button.text());
           chatId = id;
 
+          //Render DB messages
           const selector = $("#chatWindow");
           selector.empty();
           const fetchHistory = $.ajax({
@@ -487,38 +499,40 @@ $(document).ready(function () {
             }
           });
 
-          //check for opened sockets
-          if(ws) ws.close();
+          //For mobile
+          if( $('.history').css('display') == 'none' ) switchSide();
+
+          closeWS(ws);
 
           //WebSocket init
-          const webSocketAddr = window.location.origin.replace(/^http/, 'ws');;
           ws = new WebSocket(`${webSocketAddr}/v1/echo/${chatId}`);
-
-          let printMessage = function ( text ) {
-            let data = JSON.parse(text);
-            let classDiv = "messageDiv"
-            if ( data.user_id === userId) classDiv = "messageDivSelf";
-            let template = `<div class="msgContainer"><div class="${classDiv}" message-id="${data.id}"><p>${data.message}</p><span class="user">${data.username}</span><span class="time">${moment(data.created_at).format('MMMM Do YYYY, h:mm:ss a')}</span></div></div>`
-            $("#chatWindow").append(template);
-          }
 
           ws.onmessage = response => {
             printMessage( response.data );
             selector.scrollTop(selector[0].scrollHeight);
           }
 
+          //Send message listener
+          $(".messageForm").on("submit", function () {
+            event.preventDefault();
+            const text = $(this).find( "input[name='message']" ).val();
+            const check = text.replace(/\s/g, '');
+            if(ws != undefined && text != "" && check != ""){
+              ws.send(text);
+            }
+            $(this).find( "input[name='message']" ).val("");
+          });
+
         });
 
-        $(".messageForm").on("submit", function () {
-          event.preventDefault();
-          const text = $(this).find( "input[name='message']" ).val();
-          if(ws != undefined && text != ""){
-            ws.send(text);
-          }
-          $(this).find( "input[name='message']" ).val("");
-        });
-
-
+        //WS message print func
+        let printMessage = function ( text ) {
+          let data = JSON.parse(text);
+          let classDiv = "messageDiv"
+          if ( data.user_id === userId) classDiv = "messageDivSelf";
+          let template = `<div class="msgContainer"><div class="${classDiv}" message-id="${data.id}"><p>${data.message}</p><span class="user">${data.username}</span><span class="time">${moment(data.created_at).format('MMMM Do YYYY, h:mm:ss a')}</span></div></div>`
+          $("#chatWindow").append(template);
+        }
 
       });
 

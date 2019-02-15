@@ -9,7 +9,7 @@ const ws = require('express-ws')(app);
 const session = require('express-session');
 const serveStatic = require('serve-static');
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8080);
 
 //db init
 const db = require("./models");

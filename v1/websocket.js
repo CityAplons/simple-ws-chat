@@ -6,6 +6,7 @@ let db = require("../models");
   WS:
     +sendMessage
     +recieveMessage
+
 */
 
 //WebSocket id
@@ -37,36 +38,50 @@ router.ws('/echo/:socket_id', function(w, req) {
   chatrooms[id] = room;
 
   w.on('message', function (msg) {
+    //Send message to db;
     db.History.create({
        message: msg,
-       chat_id: id,
+       chat_id: req.params.socket_id,
        user_id: req.session.user.id
      }, {
        include: [ db.Chats ],
        include: [ db.User ]
-     }).then( response => {
-       let ans = {
-         id: response.id,
-         created_at: response.created_at,
-         message: response.message,
-         username: req.session.user.username,
-         user_id: response.user_id
-       }
-       room.clients.forEach(function (client) {
-           client.send(JSON.stringify(ans));
-       });
-     })
+     });
   });
 
   //Clear chatroom on client disconnect
   w.on('close', function close() {
-    const index = room.clients.indexOf(w);
+    let index = room.clients.indexOf(w);
     if (index > -1) room.clients.splice(index, 1);
     if (chatrooms[id].clients.length == 0)  {
       delete chatrooms[id];
     }
   });
 
+});
+
+db.History.addHook('afterCreate', 'pushHistory', ( message, options ) => {
+  //Get nested user
+  db.User.findOne({
+    where: {
+      "id": message.user_id
+    },
+    attributes: ['id', 'username']
+  }).then( response => {
+    //Set answer
+    let ans = {
+      id: message.id,
+      created_at: message.created_at,
+      message: message.message,
+      username: response.username,
+      user_id: response.id
+    }
+    //Send message to user in chats
+    chatrooms[message.chat_id].clients.forEach(function (client) {
+      if(client)
+        client.send(JSON.stringify(ans));
+    });
+  })
 });
 
 module.exports = router;

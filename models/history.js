@@ -26,15 +26,12 @@ module.exports = function(sequelize, DataTypes) {
 
   History.associate = function (models) {
     models.History.belongsTo(models.Chats, {
-      onDelete: "CASCADE",
       foreignKey:'chat_id',
-      targetKey: 'id',
-      foreignKeyConstraint:true
+      targetKey: 'id'
     });
     models.History.belongsTo(models.User, {
       foreignKey:'user_id',
-      targetKey: 'id',
-      foreignKeyConstraint:true
+      targetKey: 'id'
     });
   };
 
