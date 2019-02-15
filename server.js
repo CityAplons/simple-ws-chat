@@ -34,7 +34,7 @@ app.use(serveStatic(`${__dirname}/views`));
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
     key: 'SSID',
-    secret: 'ihatenodejs',
+    secret: 'secretWordMaybe',
     resave: false,
     saveUninitialized: false,
     cookie: {
