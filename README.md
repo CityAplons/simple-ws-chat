@@ -3,7 +3,7 @@ Simple chat on Node.JS and PostgreSQL (using sequelize and ws)
 
 Requirements:
   + NodeJS
-  + Postgres
+  + PostgreSQL
   
 Installing:
   
