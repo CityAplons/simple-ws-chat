@@ -77,10 +77,11 @@ db.History.addHook('afterCreate', 'pushHistory', ( message, options ) => {
       user_id: response.id
     }
     //Send message to user in chats
-    chatrooms[message.chat_id].clients.forEach(function (client) {
-      if(client)
-        client.send(JSON.stringify(ans));
-    });
+    if(chatrooms[message.chat_id]){
+      chatrooms[message.chat_id].clients.forEach(function (client) {
+          client.send(JSON.stringify(ans));
+      });
+    }
   })
 });
 
